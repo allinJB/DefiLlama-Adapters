@@ -8,5 +8,19 @@ module.exports = {
       useDefaultCoreAssets: true,
       hasStablePools: true,
     })
+  },
+  pulse: {
+    tvl: getUniTVL({
+      factory: '0x6B4449C74a9aF269A5f72B88B2B7B8604685D9B9',
+      useDefaultCoreAssets: true,
+      hasStablePools: true,
+    })
+  },
+  fantom: {
+    tvl: getUniTVL({
+      factory: '0x472f3C3c9608fe0aE8d702f3f8A2d12c410C881A',
+      useDefaultCoreAssets: true,
+      hasStablePools: true,
+    })
   }
 }

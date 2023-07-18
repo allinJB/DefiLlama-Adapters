@@ -8,11 +8,11 @@ function treasuryExports(config) {
   const chains = Object.keys(config)
   const exportObj = {  }
   chains.forEach(chain => {
-    let { ownTokenOwners = [], ownTokens, owners = [], fetchTokens = false, tokens = [] } = config[chain]
+    let { ownTokenOwners = [], ownTokens = [], owners = [], fetchTokens = false, tokens = [], blacklistedTokens = [] } = config[chain]
     if (chain === 'solana')  config[chain].solOwners = owners
     if (chain === 'solana')  config[chain].solOwners = owners
     const tvlConfig = { ...config[chain] }
-    tvlConfig.blacklistedTokens = ownTokens
+    tvlConfig.blacklistedTokens = [...ownTokens, ...blacklistedTokens]
     if(fetchTokens === true){
       exportObj[chain] = { tvl: async (_, _b, _cb, { api }) => {
         const tokens = await Promise.all(owners.map(address=>covalentGetTokens(address, chain)))
@@ -27,9 +27,9 @@ function treasuryExports(config) {
       exportObj[chain] = { tvl: sumTokensExport(tvlConfig) }
     }
 
-    if (ownTokens) {
+    if (ownTokens.length > 0) {
       const { solOwners, ...otherOptions } = config[chain]
-      const options = { ...otherOptions, owners: [...owners, ...ownTokenOwners], tokens: ownTokens, chain, resolveUniV3: false, }
+      const options = { ...otherOptions, owners: [...owners, ...ownTokenOwners], tokens: ownTokens, chain, uniV3WhitelistedTokens: ownTokens}
       exportObj[chain].ownTokens = sumTokensExport(options)
     }
   })
